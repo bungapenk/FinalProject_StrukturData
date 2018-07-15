@@ -41,9 +41,8 @@ struct sortingSearching {
 }lineUp;
 
 struct jajan {
-	char namaJajan[15][100], max[15];
-	int i, j;
-
+	int atasJajan;
+	string namaJajan[MAX];
 }stackJajan;
 
 //agar bisa dipanggil di void yang lain
@@ -96,83 +95,98 @@ void isiForm() {
 * Program Khusus Admin : Nambah Jajan
 */
 
+void initJajan() {
+    stackJajan.atasJajan = -1;
+}
+
+bool kosongJajan() {
+    return stackJajan.atasJajan == -1;
+}
+
+bool fullJajan() {
+    return stackJajan.atasJajan == MAX-1;
+}
+
 void tambahJajan() {
-	stackJajan.i++;
-	cout << "Masukkan Jajan : ";
-	cin >> stackJajan.max;
-	strcpy(stackJajan.namaJajan[stackJajan.i],stackJajan.max);
+    if(fullJajan()) {
+        cout << "Stock Jajan Penuh!" << endl;
+    }
+    else {
+        stackJajan.atasJajan++;
+        cout << "\nMasukkan Jajan : "; cin >> stackJajan.namaJajan[stackJajan.atasJajan];
+        system("cls");
+        cout << "Jajan " << stackJajan.namaJajan[stackJajan.atasJajan] << " masuk kedalam stock" << endl;
+    }
 }
 
 void hapusJajan() {
-    if(stackJajan.i > 0) {
-        cout << "Jajan yang terhapus : " << stackJajan.namaJajan[stackJajan.i] << endl;
-        stackJajan.i--; stackJajan.j--;
-    }
-    else{
-        cout << "Tidak ada data yang terambil!" << endl;
-    }
-}
-
-void lihatJajan(int n) {
-    if(stackJajan.j > 0) {
-        for(int e = n; e >= 1; e--) {
-            cout << "Jajan Yang Tersimpan : \n" << stackJajan.namaJajan[e] << endl;
-        }
+    if(kosongJajan()) {
+        cout << "Stock Jajan Kosong!" << endl;
     }
     else {
-        cout << "Tidak ada jajan yang tersimpan!" << endl;
+        cout << "Jajan " << stackJajan.namaJajan[stackJajan.atasJajan] << " sudah terhapus" << endl;
+        stackJajan.atasJajan--;
     }
 }
 
-void hapusSemuaJajan() {
-    stackJajan.i = 0; stackJajan.j = 0;
+void lihatJajan() {
+    if(kosongJajan()) {
+        cout << "JAJANNYA KOSONG!!! \nASTAGFIRULAHALDZIM!!! \nKERJA LEMBUR BAGAI QUDA, SAMPAI LUPA ORANG TUA!!!";
+    }
+    else {
+        cout << "\n      STOCK JAJAN" << endl;
+        cout << "_______________________" << endl;
+        for(int i=stackJajan.atasJajan; i>=0; i--) {
+            cout << " [-] " << stackJajan.namaJajan[i] << "\n" << endl;
+        }
+    }
 }
 
-void menuJajan() {
-	int n = 0;
-	int pilih;
-	ayo:
-	    cout <<   "=================";
-	    cout << "\n== ADMIN JAJAN ==\n";
-	    cout <<   "=================\n";
-	    stackJajan.namaJajan[n];
-	    stackJajan.i = 0;
-	    stackJajan.j = 0;
-    balik:
-        cout << " 1. Tambah Jajan\n 2. Hapus Jajan\n 3. Lihat Jajan\n 4. Hapus Semua Jajan\n 5. Balik Menu User\n";
-        cout << "Masukkan Pilihan : "; cin >> pilih;
-        cout << endl;
+int menuJajan() {
+    int pilihan;
+    initJajan();
+    do {
+        cout << "\n   ADMIN-JAJAN   " << endl;
+        cout << "_________________" << endl;
+        cout << "\n1. Tambah Jajan\n"
+             << "\n2. Hapus Jajan\n"
+             << "\n3. Lihat Jajan\n"
+             << "\n4. Balik Menu User\n";
+        cout << "Masukkan Pilihan : ";
+        cin >> pilihan;
+        while(cin.fail()) {
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            cout << "Jangan iseng, Tolong pilihlah dengan pilihan yang tersedia.\n";
+            cout << "Masukkan pilihan : ";
+            cin >> pilihan;
+        }
 
-        if(pilih == 1) {
-            if(stackJajan.j > n) {
-                stackJajan.j++; tambahJajan();
-            }
-            else {
-                cout << "Stock Jajan Penuh!" << endl;
-                getch();
-            }
-            goto balik;
+        switch(pilihan) {
+            case 1:
+                system("cls");
+                cout << "Note : Inputlah kalimat tanpa backspace. \n" << endl;
+                tambahJajan();
+                break;
+            case 2:
+                system("cls");
+                hapusJajan();
+                break;
+            case 3:
+                system("cls");
+                lihatJajan();
+                break;
+            case 4:
+                system("cls");
+                menuBalik();
+                break;
+            default:
+                cout << "Pilihan tidak tersedia" << endl;
+                break;
         }
-        else if(pilih == 2) {
-            hapusJajan(); getch();
-            goto balik;
-        }
-        else if(pilih == 3) {
-            lihatJajan(stackJajan.i); getch();
-            goto balik;
-        }
-        else if(pilih == 4) {
-            hapusSemuaJajan(); getch();
-            goto balik;
-        }
-        else if(pilih == 5) {
-            menuBalik(); getch();
-        }
-        else {
-            exit(0);
-        }
+
+    }while(pilihan != 4);
 }
-
 
 /*
 * Program User Untuk Menyewa Futsal
