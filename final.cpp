@@ -3,6 +3,7 @@
 #include <string>
 #include <conio.h>
 #include <windows.h>
+#include <iomanip>
 #define MAX 20
 
 using namespace std;
@@ -45,6 +46,11 @@ struct jajan {
 	string namaJajan[MAX];
 }stackJajan;
 
+struct harga{
+    int data;
+    harga* next;
+};
+
 //agar bisa dipanggil di void yang lain
 void opening();
 void pilihanSatu();
@@ -52,6 +58,8 @@ void pilihanDua();
 void pilihanTiga();
 void pilihanEmpat();
 void pilihanLima();
+void pilihanEnam();
+void pilihanTujuh();
 void menuBalik();
 
 void opening() {
@@ -189,6 +197,123 @@ int menuJajan() {
 }
 
 /*
+ * Program tambah harga jajan
+ */
+
+harga* head;
+harga* tail;
+harga* curr;
+harga* entry;
+harga* del;
+
+void inisialHarga() {
+    head = NULL;
+    tail = NULL;
+}
+
+void input(int dt) {
+    entry = (harga* )malloc(sizeof(harga));
+    entry ->data = dt;
+    entry ->next = NULL;
+
+    if(head==NULL) {
+        head = entry;
+        tail = head;
+    }
+    else {
+        tail ->next = entry;
+        tail = entry;
+    }
+}
+
+void hapusHarga() {
+    int simpan;
+    if(head == NULL) {
+        cout << "\nHarga Jajan Kosong!" << endl;
+    }
+    else {
+        simpan = head->data;
+        cout << "\nData yang terhapus : " << simpan << endl;
+
+        del = head;
+        head = head->next;
+        delete del;
+    }
+}
+
+void lihatHarga() {
+    curr = head;
+    if(head == NULL) {
+        cout << "Tidak ada data Harga" << endl;
+    }
+    else {
+        system("cls");
+        cout << "\n______________________";
+        cout << "\n== Data Harga Jajan ==" << endl;
+        cout <<   "______________________\n\n";
+        cout << setw(6);
+        while(curr!=NULL) {
+            cout << "  [-]  " << curr->data << endl;
+            curr = curr->next;
+        }
+        cout << endl;
+    }
+}
+
+void menuHarga()
+{
+      char pilih, ulang;
+      int data;
+
+      do
+      {
+      system("cls");
+      cout << "\n__________________________________________________\n";
+      cout << "\n==           ADMIN-TAMBAH HARGA JAJAN           ==" << endl;
+      cout <<   "== (Masukkan Harga Sesuai Urutan atas ke Bawah) ==" << endl;
+      cout << "\n__________________________________________________\n" << endl;
+      cout << "1. Tambah Harga" << endl;
+      cout << "2. Hapus Harga"<< endl;
+      cout << "3. Lihat Harga" << endl;
+      cout << "4. Balik Ke Menu User\n" << endl;
+
+      cout << "   Nama Jajan   " << endl;
+      cout << "________________" << endl;
+      for(int i=stackJajan.atasJajan; i>=0; i--) {
+            cout << "\n [-] " << stackJajan.namaJajan[i] << "\n" << endl;
+      }
+      cout << "Masukkan pilihan Anda : ";
+      cin >> pilih;
+
+      switch(pilih)
+      {
+      case '1' :
+            cout << "\nMasukkan data : ";
+            cin >> data;
+            input(data);
+            break;
+      case '2' :
+            hapusHarga();
+            break;
+      case '3' :
+            lihatHarga();
+            break;
+      case '4' :
+            menuBalik();
+      default :
+            cout<<"\nPilih ulang"<<endl;
+      }
+      cout<<"\nInput Ulang?(y/n)";
+      cin>>ulang;
+      }while(ulang=='y' || ulang=='Y');
+}
+
+void mainHarga() {
+    inisialHarga();
+    menuHarga();
+}
+
+/*
 * Program User Untuk Menyewa Futsal
 */
 
@@ -211,8 +336,9 @@ void menuUtama() {
 	cout << "2. Masukkan Lineup" << endl;
 	cout << "3. Cari Data Pemain" << endl;
 	cout << "4. (Admin) : Jajan" << endl;
-	cout << "5. Beli Jajan" << endl;
-	cout << "6. Keluar" << endl;
+	cout << "5. (Admin) : Harga Jajan" << endl;
+	cout << "6. Beli Jajan" << endl;
+	cout << "7. Keluar" << endl;
 	cout << "Pilih Menu : ";
 	cin >> booking.menu;
 	system("cls");
@@ -243,6 +369,11 @@ void menuUtama() {
 	}
 
 	else if (booking.menu == 6) {
+		pilihanEnam();
+		menuBalik();
+	}
+
+	else if (booking.menu == 7) {
 		cout << "\n+++++++++++++++++++++++";
 		cout << "\n+     TERIMAKASIH     +\n";
 		cout << "+++++++++++++++++++++++\n";
@@ -268,7 +399,7 @@ void menuBalik() {
 		cout << "\n+++++++++++++++++++++++";
 		cout << "\n+     TERIMAKASIH     +\n";
 		cout << "+++++++++++++++++++++++\n";
-		exitNow = true;
+		exit(0);
 	}
 	else {
 		cout << "\n+++++++++++++++++++";
@@ -398,8 +529,38 @@ void pilihanEmpat(void) {
 }
 
 void pilihanLima() {
+    mainHarga();
+}
 
-	_getch();
+void pilihanEnam() {
+    curr = head;
+    cout <<   "_______________"
+         << "\n| Nama Jajan  |"
+         << "\n|_____________|" << endl;
+        for(int i=stackJajan.atasJajan; i>=0; i--) {
+            cout << "[-] " << stackJajan.namaJajan[i] << "\n\n";
+        }
+
+        cout << "\n _______________";
+        cout << "\n|  Harga Jajan  |";
+        cout << "\n|_______________|";
+        if(head == NULL) {
+            cout << "\n[-] Not found" << endl;
+        }
+        else {
+            cout << setw(6);
+            while(curr!=NULL) {
+                cout << "\n[-] " << curr->data << "\n" << endl;
+                curr = curr->next;
+            }
+            cout << endl;
+        }
+    menuBalik();
+}
+
+void pilihanTujuh() {
+
+	exit(0);
 }
 
 int main(void) {
